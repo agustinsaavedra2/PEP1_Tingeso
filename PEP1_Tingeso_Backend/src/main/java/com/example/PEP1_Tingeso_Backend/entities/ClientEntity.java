@@ -1,10 +1,14 @@
 package com.example.PEP1_Tingeso_Backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,5 +25,10 @@ public class ClientEntity {
     private String name;
     private String rut;
     private String email;
-    private Integer number_visits;
+    private LocalDate birthDate;
+    private Integer numberOfVisits;
+
+    @JsonBackReference
+    @ManyToMany(mappedBy="clients")
+    private List<BookingEntity> bookingList;
 }
