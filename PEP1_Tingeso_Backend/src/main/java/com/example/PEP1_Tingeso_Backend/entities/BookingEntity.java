@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Locale;
 
 @Entity
 @Table(name = "booking")
@@ -24,8 +23,9 @@ public class BookingEntity {
     private Integer lapsNumber;
     private Integer maximumTime;
     private Integer totalDuration;
-    private Double price;
-    private Integer peopleNumber;
+    private Double basePrice;
+    private Double discountByPeopleNumber;
+    private Double discountByFrequentCustomer;
 
     @ManyToMany
     @JoinTable(name="booking_client", joinColumns = @JoinColumn(name = "booking_id"),

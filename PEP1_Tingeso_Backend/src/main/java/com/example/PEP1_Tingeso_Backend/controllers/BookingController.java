@@ -74,4 +74,26 @@ public class BookingController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PutMapping("/discountByPeopleNumber/{id}")
+    public ResponseEntity<BookingEntity> setDiscountPeopleNumber(@PathVariable("id") Long id){
+        try{
+            BookingEntity updatedBooking = bookingService.setDiscountByPeopleNumber(id);
+            return ResponseEntity.ok(updatedBooking);
+        }
+        catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/discountByFrequentCustomer/{id}")
+    public ResponseEntity<BookingEntity> setDiscountFrequentCustomer(@PathVariable("id") Long id){
+        try{
+            BookingEntity updatedBooking = bookingService.discountByFrequentCustomer(id);
+            return ResponseEntity.ok(updatedBooking);
+        }
+        catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

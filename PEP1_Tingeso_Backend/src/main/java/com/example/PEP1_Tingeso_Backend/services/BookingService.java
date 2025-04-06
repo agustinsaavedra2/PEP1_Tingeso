@@ -49,19 +49,19 @@ public class BookingService {
 
         if((booking.getLapsNumber() > 0 && booking.getLapsNumber() <= 10) ||
                     (booking.getMaximumTime() > 0 && booking.getMaximumTime() <= 10)){
-            booking.setPrice(15000.0);
+            booking.setBasePrice(15000.0);
             booking.setTotalDuration(30);
         }
 
         else if((booking.getLapsNumber() > 10 && booking.getLapsNumber() <= 15) ||
                     (booking.getMaximumTime() > 10 && booking.getMaximumTime() <= 15)){
-            booking.setPrice(20000.0);
+            booking.setBasePrice(20000.0);
             booking.setTotalDuration(35);
         }
 
         else if((booking.getLapsNumber() > 15 && booking.getLapsNumber() <= 20) ||
                     (booking.getMaximumTime() > 15 && booking.getMaximumTime() <= 20)){
-            booking.setPrice(25000.0);
+            booking.setBasePrice(25000.0);
             booking.setTotalDuration(40);
         }
         else{
@@ -72,7 +72,7 @@ public class BookingService {
             if(client == null){
                 throw new IllegalArgumentException("The client was not found");
             }
-            System.out.println("Client: " + client + ", Price: " + booking.getPrice());
+            System.out.println("Client: " + client + ", Price: " + booking.getBasePrice());
         }
 
         updateBooking(booking);
@@ -80,60 +80,86 @@ public class BookingService {
         return booking;
     }
 
-    public Double setDiscountByPeopleNumber(Long id){
-        BookingEntity booking = getBookingById(id);
+    public BookingEntity setDiscountByPeopleNumber(Long id){
+        BookingEntity booking = bookingRepository.findById(id).get();
         double discount = 0.0;
 
-        if(booking == null){
+        if(booking == null || booking.getClients() == null || booking.getClients().isEmpty()){
             throw new IllegalArgumentException("The booking was not found");
         }
 
-        if(booking.getPeopleNumber() >= 1 && booking.getPeopleNumber() <= 2){
-            discount = 0;
+        if(booking.getClients().size() >= 1 && booking.getClients().size() <= 2){
+            discount = 0.0;
+            booking.setDiscountByPeopleNumber(discount);
         }
-        else if(booking.getPeopleNumber() >= 3 && booking.getPeopleNumber() <= 5){
-            discount = booking.getPrice() * 0.10;
+        else if(booking.getClients().size() >= 3 && booking.getClients().size() <= 5){
+            discount = booking.getBasePrice() * 0.10;
+            booking.setDiscountByPeopleNumber(discount);
         }
-        else if(booking.getPeopleNumber() >= 6 && booking.getPeopleNumber() <= 10){
-            discount = booking.getPrice() * 0.20;
+        else if(booking.getClients().size() >= 6 && booking.getClients().size() <= 10){
+            discount = booking.getBasePrice() * 0.20;
+            booking.setDiscountByPeopleNumber(discount);
         }
-        else if(booking.getPeopleNumber() >= 11 && booking.getPeopleNumber() <= 15){
-            discount = booking.getPrice() * 0.20;
+        else if(booking.getClients().size() >= 11 && booking.getClients().size() <= 15){
+            discount = booking.getBasePrice() * 0.20;
+            booking.setDiscountByPeopleNumber(discount);
         }
         else{
-            return null;
+            booking.setDiscountByPeopleNumber(discount);
         }
 
-        return discount;
+        for(ClientEntity client: booking.getClients()){
+            if(client == null){
+                throw new IllegalArgumentException("The client was not found");
+            }
+
+            System.out.println("Client: " + client + ", Discount for n° people: " + booking.getDiscountByPeopleNumber());
+        }
+
+        updateBooking(booking);
+
+        return booking;
     }
 
-    public Double discountByFrequentCustomer(Long id, ClientEntity client){
-        BookingEntity booking = getBookingById(id);
-        int numberVisits = client.getNumberOfVisits();
+    public BookingEntity discountByFrequentCustomer(Long id) {
+        BookingEntity booking = bookingRepository.findById(id).get();
         double discount = 0.0;
 
-        if(booking == null){
+        if(booking == null || booking.getClients() == null || booking.getClients().isEmpty()) {
             throw new IllegalArgumentException("The booking was not found");
         }
 
-        if(numberVisits >= 0 && numberVisits <= 1){
-            discount = booking.getPrice() * 0.00;
-        }
-        else if(numberVisits >= 2 && numberVisits <= 4){
-            discount = booking.getPrice() * 0.10;
-        }
-        else if(numberVisits >= 5 && numberVisits <= 6){
-            discount = booking.getPrice() * 0.20;
-        }
-        else if(numberVisits >= 7){
-            discount = booking.getPrice() * 0.30;
-        }
-        else{
-            return null;
+        for (ClientEntity client : booking.getClients()) {
+            if (client.getNumberOfVisits() >= 0 && client.getNumberOfVisits() <= 1) {
+                client.setNumberOfVisits(client.getNumberOfVisits() + 1);
+                discount = booking.getBasePrice() * 0.00;
+                booking.setDiscountByFrequentCustomer(discount);
+            } else if (client.getNumberOfVisits() >= 2 && client.getNumberOfVisits() <= 4) {
+                client.setNumberOfVisits(client.getNumberOfVisits() + 1);
+                discount = booking.getBasePrice() * 0.10;
+                booking.setDiscountByFrequentCustomer(discount);
+            } else if (client.getNumberOfVisits() >= 5 && client.getNumberOfVisits() <= 6) {
+                client.setNumberOfVisits(client.getNumberOfVisits() + 1);
+                discount = booking.getBasePrice() * 0.20;
+                booking.setDiscountByFrequentCustomer(discount);
+            } else if (client.getNumberOfVisits() >= 7) {
+                client.setNumberOfVisits(client.getNumberOfVisits() + 1);
+                discount = booking.getBasePrice() * 0.30;
+                booking.setDiscountByFrequentCustomer(discount);
+            } else {
+                client.setNumberOfVisits(client.getNumberOfVisits() + 1);
+                booking.setDiscountByFrequentCustomer(discount);
+            }
         }
 
-        return discount;
+        for(ClientEntity client : booking.getClients()){
+            if(client == null){
+                throw new IllegalArgumentException("The client was not found");
+            }
+            System.out.println("Client: " + client.getName() + ", Discount Frecuent Customer: " + booking.getDiscountByFrequentCustomer());
+        }
+
+        updateBooking(booking);
+        return booking;
     }
-
-
 }
