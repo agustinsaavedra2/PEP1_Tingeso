@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -22,10 +23,12 @@ public class BookingEntity {
 
     private Integer lapsNumber;
     private Integer maximumTime;
+    private LocalDate bookingDate;
     private Integer totalDuration;
     private Double basePrice;
     private Double discountByPeopleNumber;
     private Double discountByFrequentCustomer;
+    private Double discountBySpecialDays;
 
     @ManyToMany
     @JoinTable(name="booking_client", joinColumns = @JoinColumn(name = "booking_id"),

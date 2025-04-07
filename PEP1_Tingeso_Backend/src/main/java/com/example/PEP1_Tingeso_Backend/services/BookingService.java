@@ -7,6 +7,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -160,6 +164,69 @@ public class BookingService {
         }
 
         updateBooking(booking);
+        return booking;
+    }
+
+    public BookingEntity discountBySpecialDays(Long id){
+        BookingEntity booking = bookingRepository.findById(id).get();
+
+        LocalDate bookingDate = booking.getBookingDate();
+        List<LocalDate> holidays = Arrays.asList(
+                LocalDate.of(bookingDate.getYear(), 1, 1),
+                LocalDate.of(bookingDate.getYear(), 4, 18),
+                LocalDate.of(bookingDate.getYear(), 4, 19),
+                LocalDate.of(bookingDate.getYear(), 5, 1),
+                LocalDate.of(bookingDate.getYear(), 5, 21),
+                LocalDate.of(bookingDate.getYear(), 6, 20),
+                LocalDate.of(bookingDate.getYear(), 6, 29),
+                LocalDate.of(bookingDate.getYear(), 7, 16),
+                LocalDate.of(bookingDate.getYear(), 8, 15),
+                LocalDate.of(bookingDate.getYear(), 9, 18),
+                LocalDate.of(bookingDate.getYear(), 9, 19),
+                LocalDate.of(bookingDate.getYear(), 10, 12),
+                LocalDate.of(bookingDate.getYear(), 10, 31),
+                LocalDate.of(bookingDate.getYear(), 11, 1),
+                LocalDate.of(bookingDate.getYear(), 11, 16),
+                LocalDate.of(bookingDate.getYear(), 12, 8),
+                LocalDate.of(bookingDate.getYear(), 12, 14),
+                LocalDate.of(bookingDate.getYear(), 12, 25)
+        );
+
+        Double extraCharge = 0.0;
+        Double birthdayDiscount = 0.0;
+
+        if(holidays.contains(bookingDate)){
+            extraCharge = extraCharge + booking.getBasePrice() * 0.1;
+            booking.setBasePrice(booking.getBasePrice() + extraCharge);
+        }
+        if(bookingDate.getDayOfWeek() == DayOfWeek.SATURDAY || bookingDate.getDayOfWeek() == DayOfWeek.SUNDAY){
+            extraCharge = extraCharge + booking.getBasePrice() * 0.15;
+            booking.setBasePrice(booking.getBasePrice() + extraCharge);
+        }
+
+        Integer groupSize = booking.getClients().size();
+        Integer numberBirthdays = 0;
+
+        for(ClientEntity client: booking.getClients()){
+            if(client.getBirthDate() != null && client.getBirthDate().getDayOfWeek() == bookingDate.getDayOfWeek()){
+                numberBirthdays = numberBirthdays + 1;
+            }
+        }
+
+        Integer numberPeopleDiscount = 0;
+
+        if(groupSize >= 3 && groupSize <= 5){
+            numberPeopleDiscount = Math.min(1, numberBirthdays);
+        }
+        if(groupSize >= 6 && groupSize <= 10){
+            numberPeopleDiscount = Math.min(2, numberBirthdays);
+        }
+
+        birthdayDiscount = birthdayDiscount + (booking.getBasePrice() * 0.50) * numberPeopleDiscount;
+
+        booking.setDiscountBySpecialDays(booking.getBasePrice() - birthdayDiscount);
+        updateBooking(booking);
+
         return booking;
     }
 }

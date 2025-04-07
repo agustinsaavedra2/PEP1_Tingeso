@@ -96,4 +96,15 @@ public class BookingController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PutMapping("/discountBySpecialDays/{id}")
+    public ResponseEntity<BookingEntity> setDiscountSpecialDays(@PathVariable("id") Long id){
+        try{
+            BookingEntity updatedBooking = bookingService.discountBySpecialDays(id);
+            return ResponseEntity.ok(updatedBooking);
+        }
+        catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
