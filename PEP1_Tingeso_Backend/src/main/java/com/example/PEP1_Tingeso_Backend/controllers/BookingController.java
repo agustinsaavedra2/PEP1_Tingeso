@@ -1,5 +1,6 @@
 package com.example.PEP1_Tingeso_Backend.controllers;
 
+import org.springframework.data.util.Pair;
 import com.example.PEP1_Tingeso_Backend.entities.BookingEntity;
 import com.example.PEP1_Tingeso_Backend.entities.ClientEntity;
 import com.example.PEP1_Tingeso_Backend.repositories.ClientRepository;
@@ -65,10 +66,10 @@ public class BookingController {
     }
 
     @PutMapping("/setPriceAndDuration/{id}")
-    public ResponseEntity<BookingEntity> setPriceAndDuration(@PathVariable("id") Long id){
+    public ResponseEntity<List<Pair<String, Double>>> setPriceAndDuration(@PathVariable("id") Long id){
         try{
-            BookingEntity updatedBooking = bookingService.setPriceAndDurationInBooking(id);
-            return ResponseEntity.ok(updatedBooking);
+            List<Pair<String, Double>> clientsBasePrice = bookingService.setPriceAndDurationInBooking(id);
+            return ResponseEntity.ok(clientsBasePrice);
         }
         catch(IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
@@ -76,10 +77,10 @@ public class BookingController {
     }
 
     @PutMapping("/discountByPeopleNumber/{id}")
-    public ResponseEntity<BookingEntity> setDiscountPeopleNumber(@PathVariable("id") Long id){
+    public ResponseEntity<List<Pair<String, Double>>> setDiscountPeopleNumber(@PathVariable("id") Long id){
         try{
-            BookingEntity updatedBooking = bookingService.setDiscountByPeopleNumber(id);
-            return ResponseEntity.ok(updatedBooking);
+            List<Pair<String, Double>> clientsDiscountPeopleNumber = bookingService.setDiscountByPeopleNumber(id);
+            return ResponseEntity.ok(clientsDiscountPeopleNumber);
         }
         catch(IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
@@ -87,10 +88,10 @@ public class BookingController {
     }
 
     @PutMapping("/discountByFrequentCustomer/{id}")
-    public ResponseEntity<BookingEntity> setDiscountFrequentCustomer(@PathVariable("id") Long id){
+    public ResponseEntity<List<Pair<String,Double>>> setDiscountFrequentCustomer(@PathVariable("id") Long id){
         try{
-            BookingEntity updatedBooking = bookingService.discountByFrequentCustomer(id);
-            return ResponseEntity.ok(updatedBooking);
+            List<Pair<String, Double>> clientsDiscountFrequency= bookingService.discountByFrequentCustomer(id);
+            return ResponseEntity.ok(clientsDiscountFrequency);
         }
         catch(IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
@@ -98,10 +99,10 @@ public class BookingController {
     }
 
     @PutMapping("/discountBySpecialDays/{id}")
-    public ResponseEntity<BookingEntity> setDiscountSpecialDays(@PathVariable("id") Long id){
+    public ResponseEntity<List<Pair<String, Double>>> setDiscountSpecialDays(@PathVariable("id") Long id){
         try{
-            BookingEntity updatedBooking = bookingService.discountBySpecialDays(id);
-            return ResponseEntity.ok(updatedBooking);
+            List<Pair<String, Double>> clientsDiscountSpecialDays = bookingService.discountBySpecialDays(id);
+            return ResponseEntity.ok(clientsDiscountSpecialDays);
         }
         catch(IllegalArgumentException e){
             return ResponseEntity.badRequest().build();

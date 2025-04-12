@@ -1,5 +1,6 @@
 package com.example.PEP1_Tingeso_Backend.services;
 
+import org.springframework.data.util.Pair;
 import com.example.PEP1_Tingeso_Backend.entities.BookingEntity;
 import com.example.PEP1_Tingeso_Backend.entities.ClientEntity;
 import com.example.PEP1_Tingeso_Backend.repositories.BookingRepository;
@@ -20,6 +21,12 @@ public class BookingService {
     private BookingRepository bookingRepository;
 
     public BookingEntity createBooking(BookingEntity booking) {
+        if(booking.getClients() != null){
+            for(ClientEntity client : booking.getClients()){
+                client.setNumberOfVisits(client.getNumberOfVisits() + 1);
+            }
+        }
+
         return bookingRepository.save(booking);
     }
 
@@ -44,7 +51,7 @@ public class BookingService {
         }
     }
 
-    public BookingEntity setPriceAndDurationInBooking(Long id){
+    public List<Pair<String, Double>> setPriceAndDurationInBooking(Long id){
         BookingEntity booking = bookingRepository.findById(id).get();
 
         if(booking == null || booking.getClients() == null || booking.getClients().isEmpty()){
@@ -72,19 +79,22 @@ public class BookingService {
             throw new IllegalArgumentException("The maximum time or the number of laps are out of range");
         }
 
+        List<Pair<String, Double>> clientsBasePrice = new ArrayList<>();
+
         for(ClientEntity client: booking.getClients()){
             if(client == null){
                 throw new IllegalArgumentException("The client was not found");
             }
-            System.out.println("Client: " + client + ", Price: " + booking.getBasePrice());
+            
+            clientsBasePrice.add(Pair.of(client.getName(), booking.getBasePrice()));
         }
 
         updateBooking(booking);
 
-        return booking;
+        return clientsBasePrice;
     }
 
-    public BookingEntity setDiscountByPeopleNumber(Long id){
+    public List<Pair<String, Double>> setDiscountByPeopleNumber(Long id){
         BookingEntity booking = bookingRepository.findById(id).get();
         double discount = 0.0;
 
@@ -112,20 +122,22 @@ public class BookingService {
             booking.setDiscountByPeopleNumber(discount);
         }
 
+        List<Pair<String, Double>> clientsDiscountSizePeople = new ArrayList<>();
+
         for(ClientEntity client: booking.getClients()){
             if(client == null){
                 throw new IllegalArgumentException("The client was not found");
             }
 
-            System.out.println("Client: " + client + ", Discount for n° people: " + booking.getDiscountByPeopleNumber());
+            clientsDiscountSizePeople.add(Pair.of(client.getName(), booking.getDiscountByPeopleNumber()));
         }
 
         updateBooking(booking);
 
-        return booking;
+        return clientsDiscountSizePeople;
     }
 
-    public BookingEntity discountByFrequentCustomer(Long id) {
+    public List<Pair<String, Double>> discountByFrequentCustomer(Long id) {
         BookingEntity booking = bookingRepository.findById(id).get();
         double discount = 0.0;
 
@@ -133,41 +145,35 @@ public class BookingService {
             throw new IllegalArgumentException("The booking was not found");
         }
 
+        List<Pair<String, Double>> clientsDiscountFrequency = new ArrayList<>();
+
         for (ClientEntity client : booking.getClients()) {
             if (client.getNumberOfVisits() >= 0 && client.getNumberOfVisits() <= 1) {
-                client.setNumberOfVisits(client.getNumberOfVisits() + 1);
                 discount = booking.getBasePrice() * 0.00;
-                booking.setDiscountByFrequentCustomer(discount);
-            } else if (client.getNumberOfVisits() >= 2 && client.getNumberOfVisits() <= 4) {
-                client.setNumberOfVisits(client.getNumberOfVisits() + 1);
+            }
+
+            else if (client.getNumberOfVisits() >= 2 && client.getNumberOfVisits() <= 4) {
                 discount = booking.getBasePrice() * 0.10;
-                booking.setDiscountByFrequentCustomer(discount);
-            } else if (client.getNumberOfVisits() >= 5 && client.getNumberOfVisits() <= 6) {
-                client.setNumberOfVisits(client.getNumberOfVisits() + 1);
+            }
+
+            else if (client.getNumberOfVisits() >= 5 && client.getNumberOfVisits() <= 6) {
                 discount = booking.getBasePrice() * 0.20;
-                booking.setDiscountByFrequentCustomer(discount);
-            } else if (client.getNumberOfVisits() >= 7) {
-                client.setNumberOfVisits(client.getNumberOfVisits() + 1);
+            }
+
+            else if (client.getNumberOfVisits() >= 7) {
                 discount = booking.getBasePrice() * 0.30;
-                booking.setDiscountByFrequentCustomer(discount);
-            } else {
-                client.setNumberOfVisits(client.getNumberOfVisits() + 1);
-                booking.setDiscountByFrequentCustomer(discount);
             }
+
+            clientsDiscountFrequency.add(Pair.of(client.getName(), discount));
         }
 
-        for(ClientEntity client : booking.getClients()){
-            if(client == null){
-                throw new IllegalArgumentException("The client was not found");
-            }
-            System.out.println("Client: " + client.getName() + ", Discount Frecuent Customer: " + booking.getDiscountByFrequentCustomer());
-        }
-
+        booking.setDiscountByFrequentCustomer(discount);
         updateBooking(booking);
-        return booking;
+
+        return clientsDiscountFrequency;
     }
 
-    public BookingEntity discountBySpecialDays(Long id){
+    public List<Pair<String, Double>> discountBySpecialDays(Long id){
         BookingEntity booking = bookingRepository.findById(id).get();
 
         LocalDate bookingDate = booking.getBookingDate();
@@ -192,24 +198,28 @@ public class BookingService {
                 LocalDate.of(bookingDate.getYear(), 12, 25)
         );
 
-        Double extraCharge = 0.0;
-        Double birthdayDiscount = 0.0;
+        Double newBasePrice = booking.getBasePrice();
 
         if(holidays.contains(bookingDate)){
-            extraCharge = extraCharge + booking.getBasePrice() * 0.1;
-            booking.setBasePrice(booking.getBasePrice() + extraCharge);
+            newBasePrice += newBasePrice * 0.10;
         }
         if(bookingDate.getDayOfWeek() == DayOfWeek.SATURDAY || bookingDate.getDayOfWeek() == DayOfWeek.SUNDAY){
-            extraCharge = extraCharge + booking.getBasePrice() * 0.15;
-            booking.setBasePrice(booking.getBasePrice() + extraCharge);
+            newBasePrice += newBasePrice * 0.15;
         }
+
+        booking.setBasePrice(newBasePrice);
 
         Integer groupSize = booking.getClients().size();
         Integer numberBirthdays = 0;
 
         for(ClientEntity client: booking.getClients()){
-            if(client.getBirthDate() != null && client.getBirthDate().getDayOfWeek() == bookingDate.getDayOfWeek()){
-                numberBirthdays = numberBirthdays + 1;
+            if(client != null && client.getBirthDate() != null){
+                LocalDate birthDate = client.getBirthDate();
+
+                if(birthDate.getMonth() == bookingDate.getMonth() &&
+                        birthDate.getDayOfMonth() == bookingDate.getDayOfMonth()){
+                    numberBirthdays++;
+                }
             }
         }
 
@@ -222,11 +232,34 @@ public class BookingService {
             numberPeopleDiscount = Math.min(2, numberBirthdays);
         }
 
-        birthdayDiscount = birthdayDiscount + (booking.getBasePrice() * 0.50) * numberPeopleDiscount;
+        List<Pair<String, Double>> clientDiscountBySpecialDays = new ArrayList<>();
 
-        booking.setDiscountBySpecialDays(booking.getBasePrice() - birthdayDiscount);
+        Double birthdayDiscount = 0.0;
+
+        for(ClientEntity client: booking.getClients()){
+            if(client == null){
+                throw new IllegalArgumentException("The client was not found");
+            }
+
+            if(client != null && client.getBirthDate() != null){
+                LocalDate birthDate = client.getBirthDate();
+
+                if(birthDate.getMonth() == bookingDate.getMonth() &&
+                        birthDate.getDayOfMonth() == bookingDate.getDayOfMonth()){
+                    birthdayDiscount = birthdayDiscount + (booking.getBasePrice() * 0.50) * numberPeopleDiscount;
+                    booking.setDiscountBySpecialDays(booking.getBasePrice() - birthdayDiscount);
+
+                    clientDiscountBySpecialDays.add(Pair.of(client.getName(), booking.getDiscountBySpecialDays()));
+                }
+                else{
+                    birthdayDiscount = 0.0;
+                    clientDiscountBySpecialDays.add(Pair.of(client.getName(), birthdayDiscount));
+                }
+            }
+        }
+
         updateBooking(booking);
 
-        return booking;
+        return clientDiscountBySpecialDays;
     }
 }
