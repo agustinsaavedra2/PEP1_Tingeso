@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -261,5 +259,87 @@ public class BookingService {
         updateBooking(booking);
 
         return clientDiscountBySpecialDays;
+    }
+
+    public List<Map<String, Object>> getRevenueReportByBookingType(LocalDate startDate, LocalDate endDate) {
+        List<BookingEntity> bookings = bookingRepository.findByBookingDateBetween(startDate, endDate).get();
+
+        Map<String, Map<String, Object>> reportMap = new HashMap<>();
+
+        for(BookingEntity booking : bookings){
+            String type;
+            if (booking.getLapsNumber() != null) {
+                type = booking.getLapsNumber() + " laps";
+            } else if (booking.getMaximumTime() != null) {
+                type = booking.getMaximumTime() + " minutes";
+            } else {
+                continue;
+            }
+
+            double totalDiscount =
+                    (booking.getDiscountByPeopleNumber() != null ? booking.getDiscountByPeopleNumber() : 0.0)
+                            + (booking.getDiscountByFrequentCustomer() != null ? booking.getDiscountByFrequentCustomer() : 0.0)
+                            + (booking.getDiscountBySpecialDays() != null ? booking.getDiscountBySpecialDays() : 0.0);
+
+            double revenue = (booking.getBasePrice() != null ? booking.getBasePrice() : 0.0) - totalDiscount;
+
+            if (!reportMap.containsKey(type)) {
+                Map<String, Object> info = new HashMap<>();
+                info.put("type", type);
+                info.put("totalBookings", 0);
+                info.put("totalRevenue", 0.0);
+                reportMap.put(type, info);
+            }
+
+            Map<String, Object> report = reportMap.get(type);
+            report.put("totalBookings", (int) report.get("totalBookings") + 1);
+            report.put("totalRevenue", (double) report.get("totalRevenue") + revenue);
+        }
+
+        return new ArrayList<>(reportMap.values());
+    }
+
+    public List<Map<String, Object>> getRevenueReportByGroupSize(LocalDate startDate, LocalDate endDate) {
+        List<BookingEntity> bookings = bookingRepository.findByBookingDateBetween(startDate, endDate).get();
+
+        Map<String, Map<String, Object>> reportMap = new HashMap<>();
+
+        for (BookingEntity booking : bookings) {
+            int groupSize = (booking.getClients() != null) ? booking.getClients().size() : 0;
+
+            String range;
+            if (groupSize >= 1 && groupSize <= 2) {
+                range = "1-2 people";
+            } else if (groupSize >= 3 && groupSize <= 5) {
+                range = "3-5 people";
+            } else if (groupSize >= 6 && groupSize <= 10) {
+                range = "6-10 people";
+            } else if (groupSize >= 11 && groupSize <= 15) {
+                range = "11-15 people";
+            }else{
+                range = "Other";
+            }
+
+            double totalDiscount =
+                    (booking.getDiscountByPeopleNumber() != null ? booking.getDiscountByPeopleNumber() : 0.0)
+                            + (booking.getDiscountByFrequentCustomer() != null ? booking.getDiscountByFrequentCustomer() : 0.0)
+                            + (booking.getDiscountBySpecialDays() != null ? booking.getDiscountBySpecialDays() : 0.0);
+
+            double revenue = (booking.getBasePrice() != null ? booking.getBasePrice() : 0.0) - totalDiscount;
+
+            if (!reportMap.containsKey(range)) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("groupRange", range);
+                data.put("totalBookings", 0);
+                data.put("totalRevenue", 0.0);
+                reportMap.put(range, data);
+            }
+
+            Map<String, Object> report = reportMap.get(range);
+            report.put("totalBookings", (int) report.get("totalBookings") + 1);
+            report.put("totalRevenue", (double) report.get("totalRevenue") + revenue);
+        }
+
+        return new ArrayList<>(reportMap.values());
     }
 }

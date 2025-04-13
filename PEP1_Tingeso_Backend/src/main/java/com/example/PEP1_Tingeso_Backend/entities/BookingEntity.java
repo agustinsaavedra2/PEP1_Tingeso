@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.*;
 import java.util.List;
 
 @Entity
@@ -21,9 +21,11 @@ public class BookingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String nameBooking;
     private Integer lapsNumber;
     private Integer maximumTime;
     private LocalDate bookingDate;
+    private LocalTime bookingTime;
     private Integer totalDuration;
     private Double basePrice;
     private Double discountByPeopleNumber;

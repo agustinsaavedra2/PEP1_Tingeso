@@ -53,4 +53,10 @@ public class VoucherController {
         voucherService.deleteVoucher(id);
         return ResponseEntity.noContent().build();
     }
-}
+
+    @GetMapping("/generateClientVouchers/{bookingId}")
+    public ResponseEntity<List<VoucherEntity>> generateClientVouchers(@PathVariable("bookingId") Long bookingId){
+        List<VoucherEntity> clientVouchers = voucherService.generateVouchers(bookingId);
+        return ResponseEntity.ok(clientVouchers);
+    }
+ }

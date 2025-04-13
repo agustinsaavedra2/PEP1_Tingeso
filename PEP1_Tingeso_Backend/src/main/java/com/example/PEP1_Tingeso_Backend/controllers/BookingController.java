@@ -7,11 +7,14 @@ import com.example.PEP1_Tingeso_Backend.repositories.ClientRepository;
 import com.example.PEP1_Tingeso_Backend.services.BookingService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -107,5 +110,21 @@ public class BookingController {
         catch(IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/report/revenueByType")
+    public List<Map<String, Object>> getRevenueReportByType(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+
+        return bookingService.getRevenueReportByBookingType(startDate, endDate);
+    }
+
+    @GetMapping("/report/revenueByGroupSize")
+    public List<Map<String, Object>> getRevenueReportByGroupSize(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+
+        return bookingService.getRevenueReportByGroupSize(startDate, endDate);
     }
 }
