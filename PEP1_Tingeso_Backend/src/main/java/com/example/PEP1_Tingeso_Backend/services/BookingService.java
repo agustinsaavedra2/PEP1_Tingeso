@@ -56,19 +56,19 @@ public class BookingService {
             throw new IllegalArgumentException("The booking was not found");
         }
 
-        if((booking.getLapsNumber() > 0 && booking.getLapsNumber() <= 10) ||
+        if(booking.getLapsNumber() == 10 ||
                     (booking.getMaximumTime() > 0 && booking.getMaximumTime() <= 10)){
             booking.setBasePrice(15000.0);
             booking.setTotalDuration(30);
         }
 
-        else if((booking.getLapsNumber() > 10 && booking.getLapsNumber() <= 15) ||
+        else if(booking.getLapsNumber() == 15 ||
                     (booking.getMaximumTime() > 10 && booking.getMaximumTime() <= 15)){
             booking.setBasePrice(20000.0);
             booking.setTotalDuration(35);
         }
 
-        else if((booking.getLapsNumber() > 15 && booking.getLapsNumber() <= 20) ||
+        else if(booking.getLapsNumber() == 20 ||
                     (booking.getMaximumTime() > 15 && booking.getMaximumTime() <= 20)){
             booking.setBasePrice(25000.0);
             booking.setTotalDuration(40);

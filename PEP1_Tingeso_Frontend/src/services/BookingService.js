@@ -1,23 +1,27 @@
 import httpClient from "../http-common"
 
 const createBooking = (data) => {
-    return httpClient.post("/api/client/", data);
+    return httpClient.post("/api/booking/", data);
 }
 
 const getBookingById = (id) => {
-    return httpClient.get(`/api/client/${id}`);
+    return httpClient.get(`/api/booking/${id}`);
 }
 
 const getAllBookings = () => {
-    return httpClient.get("/api/client/");
+    return httpClient.get("/api/booking/");
 }
 
 const updateBooking = (data) => {
-    return httpClient.put("/api/client/", data);
+    return httpClient.put("/api/booking/", data);
 }
 
 const deleteBooking = (id) => {
-    return httpClient.delete(`/api/client/${id}`);
+    return httpClient.delete(`/api/booking/${id}`);
 }
 
-export default { createBooking, getBookingById, getAllBookings, updateBooking, deleteBooking };
+const setPriceAndDuration = (id) => {
+    return httpClient.put(`/api/booking/setPriceAndDuration/${id}`)
+}
+
+export default { createBooking, getBookingById, getAllBookings, updateBooking, deleteBooking, setPriceAndDuration };

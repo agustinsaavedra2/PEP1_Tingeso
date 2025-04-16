@@ -15,6 +15,26 @@ public class ClientService {
     private ClientRepository clientRepository;
 
     public ClientEntity createClient(ClientEntity client) {
+        if(client.getName() == null || client.getName().isBlank()){
+            throw new IllegalArgumentException("Client's name is not valid");
+        }
+
+        if(client.getRut() == null || client.getRut().isBlank()){
+            throw new IllegalArgumentException("Client's RUT is not valid");
+        }
+
+        if(clientRepository.findByRut(client.getRut()).isPresent()){
+            throw new IllegalArgumentException("Client already exists");
+        }
+
+        if(client.getEmail() == null || client.getEmail().isBlank()){
+            throw new IllegalArgumentException("Client's email is not valid");
+        }
+
+        if(client.getNumberOfVisits() < 0){
+            throw new IllegalArgumentException("Client's number of visits is not valid");
+        }
+
         return clientRepository.save(client);
     }
 
