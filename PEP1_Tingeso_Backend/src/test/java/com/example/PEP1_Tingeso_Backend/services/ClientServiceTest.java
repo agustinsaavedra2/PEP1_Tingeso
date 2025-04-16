@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -116,4 +116,83 @@ public class ClientServiceTest {
 
         verify(clientRepository, never()).save(any(ClientEntity.class));
     }
+
+    @Test
+    public void whenGetClientById_thenGetClient(){
+        Long clientId = 6L;
+        ClientEntity client = new ClientEntity();
+
+        client.setId(clientId);
+        client.setName("Thomas Alvarez");
+        client.setRut("12.803.706-K");
+        client.setEmail("thomasalvarezXD@gmail.com");
+        client.setBirthDate(LocalDate.of(1968, 5, 21));
+        client.setNumberOfVisits(0);
+
+        when(clientRepository.findById(6L)).thenReturn(Optional.of(client));
+
+        ClientEntity resultClient = clientService.getClientById(clientId);
+
+        assertEquals(client.getId(), resultClient.getId());
+        assertEquals(client.getName(), resultClient.getName());
+        assertEquals(client.getRut(), resultClient.getRut());
+        assertEquals(client.getEmail(), resultClient.getEmail());
+        assertEquals(client.getBirthDate(), resultClient.getBirthDate());
+        assertEquals(client.getNumberOfVisits(), resultClient.getNumberOfVisits());
+
+        verify(clientRepository, times(1)).findById(clientId);
+    }
+
+    @Test
+    public void whenIdDoesNotExist_thenShowIllegalException(){
+        Long clientId = 20L;
+
+        when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> clientService.getClientById(clientId));
+
+        verify(clientRepository, times(1)).findById(clientId);
+    }
+
+    @Test
+    public void whenIdIsNull_thenShowIllegalException(){
+        Long clientId = null;
+
+        when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> clientService.getClientById(clientId));
+
+        verify(clientRepository, times(1)).findById(clientId);
+    }
+
+    @Test
+    public void whenDatabaseFails_thenThrowRuntimeException() {
+        Long clientId = 42L;
+
+        when(clientRepository.findById(clientId))
+                .thenThrow(new RuntimeException("Simulated DB failure"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            clientService.getClientById(clientId);
+        });
+
+        assertEquals("Simulated DB failure", exception.getMessage());
+        verify(clientRepository, times(1)).findById(clientId);
+    }
+
+    @Test
+    public void whenClientIsIncomplete_thenShowIllegalException(){
+        Long clientId = 50L;
+
+        ClientEntity client = new ClientEntity();
+
+        client.setId(clientId);
+        client.setName("Fernando Saavedra");
+
+        when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> clientService.getClientById(clientId));
+        verify(clientRepository, times(1)).findById(clientId);
+    }
+
 }

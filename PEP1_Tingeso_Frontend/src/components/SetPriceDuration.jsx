@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import BookingService from "../services/BookingService";
 
-const BookingDetails = () => {
+const SetPriceDuration = () => {
     const { id } = useParams(); // obtén el ID del booking de la URL
     const [clientPrices, setClientPrices] = useState([]);
 
@@ -34,4 +34,4 @@ const BookingDetails = () => {
     );
 };
 
-export default BookingDetails;
+export default SetPriceDuration;

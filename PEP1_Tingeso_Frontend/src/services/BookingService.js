@@ -24,4 +24,14 @@ const setPriceAndDuration = (id) => {
     return httpClient.put(`/api/booking/setPriceAndDuration/${id}`)
 }
 
-export default { createBooking, getBookingById, getAllBookings, updateBooking, deleteBooking, setPriceAndDuration };
+const setDiscountPeopleNumber = (id) => {
+    return httpClient.put(`/api/booking/setDiscountPeopleNumber/${id}`);
+}
+
+const setDiscountFreqClient = (id) => {
+    return httpClient.put(`/api/booking/discountByFrequentCustomer/${id}`);
+}
+
+export default { createBooking, getBookingById, getAllBookings, 
+    updateBooking, deleteBooking, setPriceAndDuration, setDiscountPeopleNumber,
+    setDiscountFreqClient };

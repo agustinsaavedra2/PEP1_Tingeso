@@ -79,7 +79,7 @@ public class BookingController {
         }
     }
 
-    @PutMapping("/discountByPeopleNumber/{id}")
+    @PutMapping("/setDiscountPeopleNumber/{id}")
     public ResponseEntity<List<Pair<String, Double>>> setDiscountPeopleNumber(@PathVariable("id") Long id){
         try{
             List<Pair<String, Double>> clientsDiscountPeopleNumber = bookingService.setDiscountByPeopleNumber(id);

@@ -39,11 +39,14 @@ public class ClientService {
     }
 
     public ClientEntity getClientById(Long id) {
-        return clientRepository.findById(id).get();
+        return clientRepository.findById(id).orElseThrow(
+                    () -> new IllegalArgumentException("Client not found"));
     }
 
     public ClientEntity getClientByEmail(String email) {
-        return clientRepository.findByEmail(email);
+        return clientRepository.findByEmail(email).orElseThrow(
+                () -> new IllegalArgumentException("Client not found")
+        );
     }
 
     public List<ClientEntity> getAllClients() {

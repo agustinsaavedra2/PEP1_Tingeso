@@ -4,9 +4,11 @@ import Navbar from "../src/components/Navbar"
 import AddClient from './components/AddClient'
 import LoginClient from './components/LoginClient'
 import AllBookings from './components/AllBookings'
-import './App.css'
 import AddBooking from './components/AddBooking'
-import BookingDetails from './components/BookingDetail'
+import SetPriceDuration from './components/SetPriceDuration'
+import DiscountNumPeople from './components/DiscountNumPeople'
+import DiscountFreqClient from './components/DiscountFreqClient'
+import './App.css'
 
 function App() {
 
@@ -20,7 +22,9 @@ function App() {
           <Route path="/loginClient" element={<LoginClient/>}/>
           <Route path="/allBookings" element={<AllBookings/>}/>
           <Route path="/addBooking" element={<AddBooking/>} />
-          <Route path="/setPriceDuration/:id" element={<BookingDetails/>} />
+          <Route path="/setPriceAndDuration/:id" element={<SetPriceDuration/>} />
+          <Route path="/setDiscountPeopleNumber/:id" element={<DiscountNumPeople/>} />
+          <Route path="/setDiscountFreqClient/:id" element={<DiscountFreqClient/>} />
         </Routes>
     </Router>
   )
