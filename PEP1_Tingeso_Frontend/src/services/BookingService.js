@@ -32,6 +32,10 @@ const setDiscountFreqClient = (id) => {
     return httpClient.put(`/api/booking/discountByFrequentCustomer/${id}`);
 }
 
+const setDiscountSpecialDays = (id) => {
+    return httpClient.put(`/api/booking/discountBySpecialDays/${id}`);
+}
+
 export default { createBooking, getBookingById, getAllBookings, 
     updateBooking, deleteBooking, setPriceAndDuration, setDiscountPeopleNumber,
-    setDiscountFreqClient };
+    setDiscountFreqClient, setDiscountSpecialDays };

@@ -31,7 +31,9 @@ public class ClientEntity {
     @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private LocalDate birthDate;
+
     private int numberOfVisits;
 
     @JsonBackReference

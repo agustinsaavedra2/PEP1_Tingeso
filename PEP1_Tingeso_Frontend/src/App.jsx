@@ -8,6 +8,7 @@ import AddBooking from './components/AddBooking'
 import SetPriceDuration from './components/SetPriceDuration'
 import DiscountNumPeople from './components/DiscountNumPeople'
 import DiscountFreqClient from './components/DiscountFreqClient'
+import DiscountSpecialDays from './components/DiscountSpecialDays'
 import './App.css'
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/setPriceAndDuration/:id" element={<SetPriceDuration/>} />
           <Route path="/setDiscountPeopleNumber/:id" element={<DiscountNumPeople/>} />
           <Route path="/setDiscountFreqClient/:id" element={<DiscountFreqClient/>} />
+          <Route path="/setDiscountSpecialDays/:id" element={<DiscountSpecialDays/>}/>
         </Routes>
     </Router>
   )
