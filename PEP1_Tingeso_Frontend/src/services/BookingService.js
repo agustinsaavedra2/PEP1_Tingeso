@@ -36,6 +36,24 @@ const setDiscountSpecialDays = (id) => {
     return httpClient.put(`/api/booking/discountBySpecialDays/${id}`);
 }
 
+const reportBookingType = (startDate, endDate) => {
+    return httpClient.get(`/api/booking/report/revenueByType`, {
+        params:{
+            startDate: startDate,
+            endDate: endDate
+        }
+    });
+}
+
+const reportBookingNumberPeople = (startDate, endDate) => {
+    return httpClient.get(`/api/booking/report/revenueByGroupSize`, {
+        params: {
+            startDate: startDate,
+            endDate: endDate
+        }
+    });
+}
+
 export default { createBooking, getBookingById, getAllBookings, 
     updateBooking, deleteBooking, setPriceAndDuration, setDiscountPeopleNumber,
-    setDiscountFreqClient, setDiscountSpecialDays };
+    setDiscountFreqClient, setDiscountSpecialDays, reportBookingType, reportBookingNumberPeople };

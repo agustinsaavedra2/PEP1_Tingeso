@@ -266,20 +266,32 @@ public class BookingService {
 
         Map<String, Map<String, Object>> reportMap = new HashMap<>();
 
-        for(BookingEntity booking : bookings){
+        for (BookingEntity booking : bookings) {
             String type;
+
+            int minValue = Integer.MAX_VALUE;
+
             if (booking.getLapsNumber() != null) {
-                type = booking.getLapsNumber() + " laps";
-            } else if (booking.getMaximumTime() != null) {
-                type = booking.getMaximumTime() + " minutes";
+                minValue = Math.min(minValue, booking.getLapsNumber());
+            }
+            if (booking.getMaximumTime() != null) {
+                minValue = Math.min(minValue, booking.getMaximumTime());
+            }
+
+            if (minValue <= 10) {
+                type = "10 laps or max 10 min";
+            } else if (minValue <= 15) {
+                type = "15 laps or max 15 min";
+            } else if (minValue <= 20) {
+                type = "20 laps or max 20 min";
             } else {
                 continue;
             }
 
-            double totalDiscount =
-                    (booking.getDiscountByPeopleNumber() != null ? booking.getDiscountByPeopleNumber() : 0.0)
-                            + (booking.getDiscountByFrequentCustomer() != null ? booking.getDiscountByFrequentCustomer() : 0.0)
-                            + (booking.getDiscountBySpecialDays() != null ? booking.getDiscountBySpecialDays() : 0.0);
+
+            double totalDiscount = (booking.getDiscountByPeopleNumber() != null ? booking.getDiscountByPeopleNumber() : 0.0)
+                    + (booking.getDiscountByFrequentCustomer() != null ? booking.getDiscountByFrequentCustomer() : 0.0)
+                    + (booking.getDiscountBySpecialDays() != null ? booking.getDiscountBySpecialDays() : 0.0);
 
             double revenue = (booking.getBasePrice() != null ? booking.getBasePrice() : 0.0) - totalDiscount;
 
@@ -298,6 +310,7 @@ public class BookingService {
 
         return new ArrayList<>(reportMap.values());
     }
+
 
     public List<Map<String, Object>> getRevenueReportByGroupSize(LocalDate startDate, LocalDate endDate) {
         List<BookingEntity> bookings = bookingRepository.findByBookingDateBetween(startDate, endDate).get();
