@@ -1,5 +1,7 @@
 package com.example.PEP1_Tingeso_Backend.services;
 
+import com.example.PEP1_Tingeso_Backend.entities.VoucherEntity;
+import com.example.PEP1_Tingeso_Backend.repositories.VoucherRepository;
 import org.springframework.data.util.Pair;
 import com.example.PEP1_Tingeso_Backend.entities.BookingEntity;
 import com.example.PEP1_Tingeso_Backend.entities.ClientEntity;
@@ -17,6 +19,9 @@ import java.util.*;
 public class BookingService {
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private VoucherRepository voucherRepository;
 
     public BookingEntity createBooking(BookingEntity booking) {
         if(booking.getClients() != null){
@@ -171,10 +176,10 @@ public class BookingService {
         return clientsDiscountFrequency;
     }
 
-    public List<Pair<String, Double>> discountBySpecialDays(Long id){
+    public List<Pair<String, Double>> discountBySpecialDays(Long id) {
         BookingEntity booking = bookingRepository.findById(id).get();
-
         LocalDate bookingDate = booking.getBookingDate();
+
         List<LocalDate> holidays = Arrays.asList(
                 LocalDate.of(bookingDate.getYear(), 1, 1),
                 LocalDate.of(bookingDate.getYear(), 4, 18),
@@ -198,64 +203,63 @@ public class BookingService {
 
         Double newBasePrice = booking.getBasePrice();
 
-        if(holidays.contains(bookingDate)){
+        if (holidays.contains(bookingDate)) {
             newBasePrice += newBasePrice * 0.10;
         }
-        if(bookingDate.getDayOfWeek() == DayOfWeek.SATURDAY || bookingDate.getDayOfWeek() == DayOfWeek.SUNDAY){
+        if (bookingDate.getDayOfWeek() == DayOfWeek.SATURDAY || bookingDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
             newBasePrice += newBasePrice * 0.15;
         }
 
         booking.setBasePrice(newBasePrice);
 
-        Integer groupSize = booking.getClients().size();
-        Integer numberBirthdays = 0;
+        int groupSize = booking.getClients().size();
+        int numberBirthdays = 0;
 
-        for(ClientEntity client: booking.getClients()){
-            if(client != null && client.getBirthDate() != null){
+        for (ClientEntity client : booking.getClients()) {
+            if (client != null && client.getBirthDate() != null) {
                 LocalDate birthDate = client.getBirthDate();
-
-                if(birthDate.getMonth() == bookingDate.getMonth() &&
-                        birthDate.getDayOfMonth() == bookingDate.getDayOfMonth()){
+                if (birthDate.getMonth() == bookingDate.getMonth() &&
+                        birthDate.getDayOfMonth() == bookingDate.getDayOfMonth()) {
                     numberBirthdays++;
                 }
             }
         }
 
-        Integer numberPeopleDiscount = 0;
-
-        if(groupSize >= 3 && groupSize <= 5){
+        int numberPeopleDiscount = 0;
+        if (groupSize >= 3 && groupSize <= 5) {
             numberPeopleDiscount = Math.min(1, numberBirthdays);
-        }
-        if(groupSize >= 6 && groupSize <= 10){
+        } else if (groupSize >= 6 && groupSize <= 10) {
             numberPeopleDiscount = Math.min(2, numberBirthdays);
         }
 
         List<Pair<String, Double>> clientDiscountBySpecialDays = new ArrayList<>();
+        double totalBirthdayDiscount = 0.0;
+        int appliedDiscounts = 0;
 
-        Double birthdayDiscount = 0.0;
-
-        for(ClientEntity client: booking.getClients()){
-            if(client == null){
+        for (ClientEntity client : booking.getClients()) {
+            if (client == null) {
                 throw new IllegalArgumentException("The client was not found");
             }
 
-            if(client != null && client.getBirthDate() != null){
+            double clientDiscount = 0.0;
+
+            if (client.getBirthDate() != null) {
                 LocalDate birthDate = client.getBirthDate();
 
-                if(birthDate.getMonth() == bookingDate.getMonth() &&
-                        birthDate.getDayOfMonth() == bookingDate.getDayOfMonth()){
-                    birthdayDiscount = birthdayDiscount + (booking.getBasePrice() * 0.50) * numberPeopleDiscount;
-                    booking.setDiscountBySpecialDays(booking.getBasePrice() - birthdayDiscount);
+                if (birthDate.getMonth() == bookingDate.getMonth() &&
+                        birthDate.getDayOfMonth() == bookingDate.getDayOfMonth() &&
+                        appliedDiscounts < numberPeopleDiscount) {
 
-                    clientDiscountBySpecialDays.add(Pair.of(client.getName(), booking.getDiscountBySpecialDays()));
-                }
-                else{
-                    birthdayDiscount = 0.0;
-                    clientDiscountBySpecialDays.add(Pair.of(client.getName(), birthdayDiscount));
+                    clientDiscount = booking.getBasePrice() * 0.50;
+                    totalBirthdayDiscount += clientDiscount;
+                    appliedDiscounts++;
                 }
             }
+
+            clientDiscountBySpecialDays.add(Pair.of(client.getName(), clientDiscount));
         }
 
+        booking.setDiscountBySpecialDays(totalBirthdayDiscount);
         updateBooking(booking);
 
         return clientDiscountBySpecialDays;
@@ -288,12 +292,11 @@ public class BookingService {
                 continue;
             }
 
+            List<VoucherEntity> vouchers = voucherRepository.findByBookingId(booking.getId());
 
-            double totalDiscount = (booking.getDiscountByPeopleNumber() != null ? booking.getDiscountByPeopleNumber() : 0.0)
-                    + (booking.getDiscountByFrequentCustomer() != null ? booking.getDiscountByFrequentCustomer() : 0.0)
-                    + (booking.getDiscountBySpecialDays() != null ? booking.getDiscountBySpecialDays() : 0.0);
-
-            double revenue = (booking.getBasePrice() != null ? booking.getBasePrice() : 0.0) - totalDiscount;
+            double revenue = vouchers.stream()
+                    .mapToDouble(v -> v.getTotal_price() != null ? v.getTotal_price() : 0.0)
+                    .sum();
 
             if (!reportMap.containsKey(type)) {
                 Map<String, Object> info = new HashMap<>();
@@ -333,12 +336,11 @@ public class BookingService {
                 range = "Other";
             }
 
-            double totalDiscount =
-                    (booking.getDiscountByPeopleNumber() != null ? booking.getDiscountByPeopleNumber() : 0.0)
-                            + (booking.getDiscountByFrequentCustomer() != null ? booking.getDiscountByFrequentCustomer() : 0.0)
-                            + (booking.getDiscountBySpecialDays() != null ? booking.getDiscountBySpecialDays() : 0.0);
+            List<VoucherEntity> vouchers = voucherRepository.findByBookingId(booking.getId());
 
-            double revenue = (booking.getBasePrice() != null ? booking.getBasePrice() : 0.0) - totalDiscount;
+            double revenue = vouchers.stream()
+                    .mapToDouble(v -> v.getTotal_price() != null ? v.getTotal_price() : 0.0)
+                    .sum();
 
             if (!reportMap.containsKey(range)) {
                 Map<String, Object> data = new HashMap<>();

@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.util.Pair;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -38,6 +41,9 @@ public class VoucherService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private BookingService bookingService;
 
     @Value("${spring.mail.username}")
     private String username;
@@ -71,16 +77,23 @@ public class VoucherService {
         BookingEntity booking = bookingRepository.findById(bookingId).orElse(null);
         if (booking == null) return null;
 
+        List<Pair<String, Double>> discountSpecials = bookingService.discountBySpecialDays(bookingId);
+
+        // Convertimos la lista de pares a un mapa para acceder fácilmente
+        Map<String, Double> specialDiscountMap = discountSpecials.stream()
+                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
+
         List<VoucherEntity> vouchers = new ArrayList<>();
 
         for (ClientEntity client : booking.getClients()) {
             double basePrice = booking.getBasePrice();
             double discountPeople = booking.getDiscountByPeopleNumber();
             double discountFrequent = booking.getDiscountByFrequentCustomer();
-            double discountSpecial = booking.getDiscountBySpecialDays();
+            double discountSpecial = specialDiscountMap.getOrDefault(client.getName(), 0.0);
+
             double finalPrice = basePrice - discountPeople - discountFrequent - discountSpecial;
-            double iva = basePrice * 0.19;
-            double totalPrice = basePrice + iva;
+            double iva = finalPrice * 0.19;
+            double totalPrice = finalPrice + iva;
 
             VoucherEntity voucher = new VoucherEntity();
             voucher.setBookingId(booking.getId());
@@ -103,12 +116,13 @@ public class VoucherService {
             vouchers.add(saved);
 
             byte[] pdfBytes = generateVoucherPDF(saved);
-
-            sendEmailWithVoucher(saved.getClientName(), username, pdfBytes);
+            sendEmailWithVoucher(saved.getClientName(), client.getEmail(), pdfBytes);
         }
 
         return vouchers;
     }
+
+
 
     private byte[] generateVoucherPDF(VoucherEntity voucher) {
         try {

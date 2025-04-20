@@ -10,6 +10,5 @@ import java.util.Optional;
 
 public interface RackRepository extends JpaRepository<RackEntity, Long> {
     public Optional<RackEntity> findById(Long id);
-    public Optional<RackEntity> findByDateAndStartTime(LocalDate date, LocalTime startTime);
-    public Optional<List<RackEntity>> findByDateAndStatus(LocalDate date, String status);
+    public List<RackEntity> findByDateBetween(LocalDate startDate, LocalDate endDate);
 }

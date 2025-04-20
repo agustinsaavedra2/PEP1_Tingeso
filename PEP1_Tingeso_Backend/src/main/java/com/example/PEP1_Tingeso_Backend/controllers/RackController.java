@@ -1,5 +1,6 @@
 package com.example.PEP1_Tingeso_Backend.controllers;
 
+import com.example.PEP1_Tingeso_Backend.entities.BookingEntity;
 import com.example.PEP1_Tingeso_Backend.entities.RackEntity;
 import com.example.PEP1_Tingeso_Backend.services.BookingService;
 import com.example.PEP1_Tingeso_Backend.services.RackService;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @Controller
@@ -60,30 +63,12 @@ public class RackController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/occupy")
-    public boolean occupyRackBlock(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
-            @RequestParam Long bookingId,
-            @RequestParam String clientName
-    ) {
-        return rackService.occupyRackBlock(date, startTime, bookingId, clientName);
-    }
+    @GetMapping("/weekly")
+    public ResponseEntity<?> getWeeklyRacks(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                LocalDate startDate){
+        Map<String, Map<LocalTime, BookingEntity>> rack = rackService.getWeeklyBookingRackFromDate(startDate);
 
-    @PostMapping("/free")
-    public boolean freeRackBlock(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime
-    ) {
-        return rackService.freeRackBlock(date, startTime);
+        return ResponseEntity.ok(rack);
     }
-
-    @GetMapping("/available")
-    public List<RackEntity> getAvailableBlocksByDate(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
-    ) {
-        return rackService.getAvailableBlocksByDate(date);
-    }
-
 
 }
