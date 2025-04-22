@@ -58,7 +58,7 @@ public class RackController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteVoucher(@PathVariable("id") Long id) throws Exception{
+    public ResponseEntity<?> deleteRack(@PathVariable("id") Long id) throws Exception{
         rackService.deleteRack(id);
         return ResponseEntity.noContent().build();
     }

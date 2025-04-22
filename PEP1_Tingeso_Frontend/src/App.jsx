@@ -11,6 +11,8 @@ import DiscountFreqClient from './components/DiscountFreqClient'
 import DiscountSpecialDays from './components/DiscountSpecialDays'
 import ReportBookingType from './components/ReportBookingType'
 import ReportBookingNumPeople from './components/ReportBookingNumPeople'
+import WeeklyRack from './components/WeeklyRack'
+import GenerateClientVouchers from './components/GenerateClientVouchers'
 import './App.css'
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
           <Route path="/setDiscountSpecialDays/:id" element={<DiscountSpecialDays/>}/>
           <Route path="/reportBookingType/" element={<ReportBookingType/>} />
           <Route path="/reportBookingNumPeople" element={<ReportBookingNumPeople/>} />
+          <Route path="/getWeeklyRack" element={<WeeklyRack/>} />
+          <Route path="/generateClientVouchers" element={<GenerateClientVouchers/>} />
         </Routes>
     </Router>
   )
