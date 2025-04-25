@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Pep1TingesoBackendApplication {
+public class PEP1TingesoBackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Pep1TingesoBackendApplication.class, args);
+		SpringApplication.run(PEP1TingesoBackendApplication.class, args);
 	}
 
 }

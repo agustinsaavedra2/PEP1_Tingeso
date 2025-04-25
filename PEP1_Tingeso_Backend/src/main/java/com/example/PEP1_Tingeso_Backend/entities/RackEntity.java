@@ -24,7 +24,5 @@ public class RackEntity {
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
-    private String status;
     private Long bookingId;
-    private String clientName;
 }

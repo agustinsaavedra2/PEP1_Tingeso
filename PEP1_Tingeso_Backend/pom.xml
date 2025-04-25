@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>PEP1_Tingeso_Backend</artifactId>
+	<artifactId>pep1_tingeso_backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>PEP1_Tingeso_Backend</name>
 	<description>Sección Backend del Proyecto de Sistema Integral Karting RM</description>
@@ -107,6 +107,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>pep1_tingeso_backend</finalName>
 	</build>
 
 </project>

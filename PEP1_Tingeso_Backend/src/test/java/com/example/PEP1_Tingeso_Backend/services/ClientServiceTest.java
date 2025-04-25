@@ -12,6 +12,7 @@ import static org.mockito.Mockito.*;
 
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -38,10 +39,8 @@ public class ClientServiceTest {
         client.setBirthDate(LocalDate.of(2001, 4, 30));
         client.setNumberOfVisits(0);
 
-        // When
         when(clientRepository.save(client)).thenReturn(client);
 
-        // Then
         ClientEntity savedClient = clientService.createClient(client);
 
         assertEquals(client.getId(), savedClient.getId());
@@ -93,6 +92,38 @@ public class ClientServiceTest {
         client.setRut("11.226.619-4");
         client.setEmail("ximeolmos@hotmail.cl");
         client.setBirthDate(LocalDate.of(1967, 1, 27));
+        client.setNumberOfVisits(0);
+
+        assertThrows(IllegalArgumentException.class, () -> clientService.createClient(client));
+
+        verify(clientRepository, never()).save(any(ClientEntity.class));
+    }
+
+    @Test
+    public void whenNameRutIsBlank_thenClientIsNotSaved(){
+        ClientEntity client = new ClientEntity();
+
+        client.setId(10L);
+        client.setName("Ximena Saavedra");
+        client.setRut("");
+        client.setEmail("ximenasaavedra_w@gmail.com");
+        client.setBirthDate(LocalDate.of(1960, 2, 13));
+        client.setNumberOfVisits(0);
+
+        assertThrows(IllegalArgumentException.class, () -> clientService.createClient(client));
+
+        verify(clientRepository, never()).save(any(ClientEntity.class));
+    }
+
+    @Test
+    public void whenBirthDateIsNull_thenClientIsNotSaved(){
+        ClientEntity client = new ClientEntity();
+
+        client.setId(20L);
+        client.setName("Margarita Olmos");
+        client.setRut("10.257.290-4");
+        client.setEmail("margarita.olmos@gmail.com");
+        client.setBirthDate(null);
         client.setNumberOfVisits(0);
 
         assertThrows(IllegalArgumentException.class, () -> clientService.createClient(client));
@@ -486,5 +517,61 @@ public class ClientServiceTest {
         });
 
         assertEquals("Client's number of visits is not valid", exception.getMessage());
+    }
+
+    @Test
+    void whenDeleteClient_successfullyDeletesClient() throws Exception {
+        Long clientId = 1L;
+        doNothing().when(clientRepository).deleteById(clientId);
+
+        clientService.deleteClient(clientId);
+
+        verify(clientRepository, times(1)).deleteById(clientId);
+    }
+
+    @Test
+    void whenDeleteClient_throwsExceptionWhenRepositoryFails() {
+        Long clientId = 2L;
+        doThrow(new RuntimeException("Error interno")).when(clientRepository).deleteById(clientId);
+
+        Exception thrown = assertThrows(Exception.class, () -> clientService.deleteClient(clientId));
+
+        assertEquals("Error interno", thrown.getMessage());
+    }
+
+    @Test
+    void whenDeleteClient_fails_thenPropagatesExactErrorMessage() {
+        Long clientId = 10L;
+        String originalMessage = "No se pudo eliminar el cliente";
+
+        doThrow(new RuntimeException(originalMessage))
+                .when(clientRepository).deleteById(clientId);
+
+        Exception thrown = assertThrows(Exception.class, () -> clientService.deleteClient(clientId));
+
+        assertTrue(thrown.getMessage().contains(originalMessage));
+    }
+
+    @Test
+    void whenDeleteClient_thenRepositoryCalledOnlyOnce() throws Exception {
+        Long clientId = 3L;
+        doNothing().when(clientRepository).deleteById(clientId);
+
+        clientService.deleteClient(clientId);
+
+        verify(clientRepository, times(1)).deleteById(clientId);
+        verifyNoMoreInteractions(clientRepository);
+    }
+
+    @Test
+    void whenDeletingNonExistentClient_thenThrowsException() {
+        Long clientId = 999L;
+
+        doThrow(new EmptyResultDataAccessException(1))
+                .when(clientRepository).deleteById(clientId);
+
+        Exception thrown = assertThrows(Exception.class, () -> clientService.deleteClient(clientId));
+
+        assertTrue(thrown.getMessage().contains("1"));
     }
 }

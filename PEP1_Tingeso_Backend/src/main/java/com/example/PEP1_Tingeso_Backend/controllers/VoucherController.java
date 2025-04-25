@@ -3,7 +3,6 @@ package com.example.PEP1_Tingeso_Backend.controllers;
 import com.example.PEP1_Tingeso_Backend.entities.VoucherEntity;
 import com.example.PEP1_Tingeso_Backend.services.VoucherService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
