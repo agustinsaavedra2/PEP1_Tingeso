@@ -1,4 +1,4 @@
-package com.example.PEP1_Tingeso_Backend;
+package com.example.pep1_tingeso_backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

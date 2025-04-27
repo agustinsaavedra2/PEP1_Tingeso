@@ -1,6 +1,6 @@
-package com.example.PEP1_Tingeso_Backend.services;
+package com.example.pep1_tingeso_backend.services;
 
-import com.example.PEP1_Tingeso_Backend.repositories.VoucherRepository;
+import com.example.pep1_tingeso_backend.repositories.VoucherRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

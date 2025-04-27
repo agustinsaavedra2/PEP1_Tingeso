@@ -1,10 +1,10 @@
-package com.example.PEP1_Tingeso_Backend.services;
+package com.example.pep1_tingeso_backend.services;
 
-import com.example.PEP1_Tingeso_Backend.entities.BookingEntity;
-import com.example.PEP1_Tingeso_Backend.entities.ClientEntity;
-import com.example.PEP1_Tingeso_Backend.entities.VoucherEntity;
-import com.example.PEP1_Tingeso_Backend.repositories.BookingRepository;
-import com.example.PEP1_Tingeso_Backend.repositories.VoucherRepository;
+import com.example.pep1_tingeso_backend.entities.BookingEntity;
+import com.example.pep1_tingeso_backend.entities.ClientEntity;
+import com.example.pep1_tingeso_backend.entities.VoucherEntity;
+import com.example.pep1_tingeso_backend.repositories.BookingRepository;
+import com.example.pep1_tingeso_backend.repositories.VoucherRepository;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;

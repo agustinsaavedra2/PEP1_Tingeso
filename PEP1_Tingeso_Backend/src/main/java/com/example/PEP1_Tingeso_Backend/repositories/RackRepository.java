@@ -1,6 +1,6 @@
-package com.example.PEP1_Tingeso_Backend.repositories;
+package com.example.pep1_tingeso_backend.repositories;
 
-import com.example.PEP1_Tingeso_Backend.entities.RackEntity;
+import com.example.pep1_tingeso_backend.entities.RackEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

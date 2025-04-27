@@ -1,4 +1,4 @@
-package com.example.PEP1_Tingeso_Backend.entities;
+package com.example.pep1_tingeso_backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;

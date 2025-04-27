@@ -1,7 +1,7 @@
-package com.example.PEP1_Tingeso_Backend.services;
+package com.example.pep1_tingeso_backend.services;
 
-import com.example.PEP1_Tingeso_Backend.entities.ClientEntity;
-import com.example.PEP1_Tingeso_Backend.repositories.ClientRepository;
+import com.example.pep1_tingeso_backend.entities.ClientEntity;
+import com.example.pep1_tingeso_backend.repositories.ClientRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
