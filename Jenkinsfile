@@ -8,14 +8,14 @@ pipeline{
         stage("Build JAR File"){
             steps{
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/agustinsaavedra2/PEP1_Tingeso']])
-                dir("pep1_tingeso_backend"){
+                dir("PEP1_Tingeso_Backend"){
                     bat "mvn clean install"
                 }
             }
         }
         stage("Test"){
             steps{
-                dir("pep1_tingeso_backend"){
+                dir("PEP1_Tingeso_Backend"){
                     bat "mvn test"
                 }
             }
