@@ -1,9 +1,9 @@
-package com.example.pep1_tingeso_backend.services;
+package com.example.PEP1_Tingeso_Backend.services;
 
-import com.example.pep1_tingeso_backend.entities.BookingEntity;
-import com.example.pep1_tingeso_backend.entities.RackEntity;
-import com.example.pep1_tingeso_backend.repositories.BookingRepository;
-import com.example.pep1_tingeso_backend.repositories.RackRepository;
+import com.example.PEP1_Tingeso_Backend.entities.BookingEntity;
+import com.example.PEP1_Tingeso_Backend.entities.RackEntity;
+import com.example.PEP1_Tingeso_Backend.repositories.BookingRepository;
+import com.example.PEP1_Tingeso_Backend.repositories.RackRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

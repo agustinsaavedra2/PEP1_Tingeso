@@ -1,11 +1,11 @@
-package com.example.pep1_tingeso_backend.services;
+package com.example.PEP1_Tingeso_Backend.services;
 
-import com.example.pep1_tingeso_backend.entities.VoucherEntity;
-import com.example.pep1_tingeso_backend.repositories.VoucherRepository;
+import com.example.PEP1_Tingeso_Backend.entities.VoucherEntity;
+import com.example.PEP1_Tingeso_Backend.repositories.VoucherRepository;
 import org.springframework.data.util.Pair;
-import com.example.pep1_tingeso_backend.entities.BookingEntity;
-import com.example.pep1_tingeso_backend.entities.ClientEntity;
-import com.example.pep1_tingeso_backend.repositories.BookingRepository;
+import com.example.PEP1_Tingeso_Backend.entities.BookingEntity;
+import com.example.PEP1_Tingeso_Backend.entities.ClientEntity;
+import com.example.PEP1_Tingeso_Backend.repositories.BookingRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

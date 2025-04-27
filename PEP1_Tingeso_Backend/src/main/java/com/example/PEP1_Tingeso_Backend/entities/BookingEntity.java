@@ -1,4 +1,4 @@
-package com.example.pep1_tingeso_backend.entities;
+package com.example.PEP1_Tingeso_Backend.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

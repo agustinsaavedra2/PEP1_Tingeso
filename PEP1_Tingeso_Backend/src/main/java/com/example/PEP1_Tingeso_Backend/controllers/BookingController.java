@@ -1,10 +1,10 @@
-package com.example.pep1_tingeso_backend.controllers;
+package com.example.PEP1_Tingeso_Backend.controllers;
 
 import org.springframework.data.util.Pair;
-import com.example.pep1_tingeso_backend.entities.BookingEntity;
-import com.example.pep1_tingeso_backend.entities.ClientEntity;
-import com.example.pep1_tingeso_backend.repositories.ClientRepository;
-import com.example.pep1_tingeso_backend.services.BookingService;
+import com.example.PEP1_Tingeso_Backend.entities.BookingEntity;
+import com.example.PEP1_Tingeso_Backend.entities.ClientEntity;
+import com.example.PEP1_Tingeso_Backend.repositories.ClientRepository;
+import com.example.PEP1_Tingeso_Backend.services.BookingService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;

@@ -1,9 +1,9 @@
-package com.example.pep1_tingeso_backend.controllers;
+package com.example.PEP1_Tingeso_Backend.controllers;
 
-import com.example.pep1_tingeso_backend.entities.BookingEntity;
-import com.example.pep1_tingeso_backend.entities.RackEntity;
-import com.example.pep1_tingeso_backend.services.BookingService;
-import com.example.pep1_tingeso_backend.services.RackService;
+import com.example.PEP1_Tingeso_Backend.entities.BookingEntity;
+import com.example.PEP1_Tingeso_Backend.entities.RackEntity;
+import com.example.PEP1_Tingeso_Backend.services.BookingService;
+import com.example.PEP1_Tingeso_Backend.services.RackService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;

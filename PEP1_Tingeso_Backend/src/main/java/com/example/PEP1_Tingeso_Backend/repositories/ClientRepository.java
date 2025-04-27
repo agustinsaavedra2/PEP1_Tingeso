@@ -1,6 +1,6 @@
-package com.example.pep1_tingeso_backend.repositories;
+package com.example.PEP1_Tingeso_Backend.repositories;
 
-import com.example.pep1_tingeso_backend.entities.ClientEntity;
+import com.example.PEP1_Tingeso_Backend.entities.ClientEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

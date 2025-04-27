@@ -1,7 +1,7 @@
-package com.example.pep1_tingeso_backend.controllers;
+package com.example.PEP1_Tingeso_Backend.controllers;
 
-import com.example.pep1_tingeso_backend.entities.VoucherEntity;
-import com.example.pep1_tingeso_backend.services.VoucherService;
+import com.example.PEP1_Tingeso_Backend.entities.VoucherEntity;
+import com.example.PEP1_Tingeso_Backend.services.VoucherService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

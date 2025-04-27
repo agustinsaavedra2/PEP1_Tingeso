@@ -1,4 +1,4 @@
-package com.example.pep1_tingeso_backend;
+package com.example.PEP1_Tingeso_Backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

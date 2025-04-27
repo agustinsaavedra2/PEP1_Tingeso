@@ -1,6 +1,6 @@
-package com.example.pep1_tingeso_backend.repositories;
+package com.example.PEP1_Tingeso_Backend.repositories;
 
-import com.example.pep1_tingeso_backend.entities.VoucherEntity;
+import com.example.PEP1_Tingeso_Backend.entities.VoucherEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
