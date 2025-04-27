@@ -1,35 +1,71 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"; 
+import { use, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom"; 
 import BookingService from "../services/BookingService";
 
 const DiscountNumPeople = () => {
     const {id} = useParams();
-    const [discountNumPeople , setDiscountNumPeople] = useState([]);
+    const [idInput, setIdInput] = useState(id || "");
+    const [clientsDiscounts , setClientsDiscounts] = useState([]);
+    const [showPrices, setShowPrices] = useState(false);
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        BookingService.setDiscountPeopleNumber(id).then((response) => {
-            setDiscountNumPeople(response.data);
+    const handleInputChange = (e) => {
+        setIdInput(e.target.value);
+    }
+
+    const handleDiscountPeopleNumber = () => {
+        BookingService.setDiscountPeopleNumber(idInput).then((response) => {
+            setClientsDiscounts(response.data);
+            setShowPrices(true);
         }).catch((error) => {
             console.log("Error fetching discount by number of people.", error);
-        })
-    }, [id]);
+        });
+    }
+
+    const handleMenuClient = () => {
+        navigate("/menuClient");
+    }
 
     return(
         <div className="container mt-4">
-            <h2 className="mb-4">Client Discount for People Number in Booking #{id}</h2>
-            {discountNumPeople.length > 0 ? (
-                <ul className="list-group">
-                    {discountNumPeople.map((pair, index) => (
-                        <li key={index} className="list-group-item">
-                            {pair.first} - ${pair.second.toLocaleString()}
-                        </li>
-                    ))}
-                </ul>
+            <h2 className="mb-4" style={{margin: "50px"}}>Set Discount for Number People</h2>
+            
+            <div>
+                <label htmlFor="bookingId">Enter the Booking ID: </label>
+                <input 
+                    type="text"
+                    id="bookingId"
+                    className="form-control"
+                    value={idInput}
+                    onChange={handleInputChange}/>
+            </div>
+
+            <div>
+                <button className="btn btn-primary mb-4" onClick={handleDiscountPeopleNumber} style={{margin:"20px"}}>
+                    Discount for Number People
+                </button>
+            </div>
+
+            {showPrices && clientsDiscounts.length > 0 ? (
+                <div>
+                    <h3 className="mb-3">Client Discount Number People for Booking #{idInput}</h3>
+                    <ul className="list-group">
+                        {clientsDiscounts.map((pair, index) => (
+                            <li key={index} className="list-group-item">
+                                {pair.first} - ${pair.second.toLocaleString()}
+                            </li>
+                        ))}
+                    </ul>
+                    <button className="btn btn-success mb-4" style={{margin:"30px"}} onClick={handleMenuClient}>
+                        Return to menu client
+                    </button>
+                </div>
             ) : (
-                <p>No data available.</p>
+                showPrices && <p>No data available.</p>
             )}
+            
         </div>
-    )
-}
+    );
+};
 
 export default DiscountNumPeople;

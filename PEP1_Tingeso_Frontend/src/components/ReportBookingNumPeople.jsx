@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import BookingService from "../services/BookingService"; 
+import { useNavigate } from "react-router-dom";
 
 const ReportBookingNumPeople = () => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [revenueReport, setRevenueReport] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleGenerateReport = () => {
         if (!startDate || !endDate) {
@@ -23,6 +25,10 @@ const ReportBookingNumPeople = () => {
             setLoading(false);
         })
     };
+
+    const handleMenuClient = () => {
+        navigate("/menuClient");
+    }
 
     return (
         <div>
@@ -70,8 +76,12 @@ const ReportBookingNumPeople = () => {
                             ))}
                         </tbody>
                     </table>
+                    <button className="btn btn-success mb-4" style={{margin:"30px"}} onClick={handleMenuClient}>
+                        Return to menu client
+                    </button>
                 </div>
             )}
+
         </div>
     );
 };

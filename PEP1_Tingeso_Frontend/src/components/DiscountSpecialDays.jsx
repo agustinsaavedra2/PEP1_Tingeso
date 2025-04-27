@@ -1,33 +1,69 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import BookingService from "../services/BookingService"
 
 const DiscountSpecialDays = () => {
-    const [discSpecialDays, setDiscSpecialDays] = useState([]);
     const {id} = useParams();
+    const [idInput, setIdInput] = useState(id || "");
+    const [clientsDiscounts, setClientsDiscounts] = useState([]);
+    const [showPrices, setShowPrices] = useState(false);
+    const navigate = useNavigate();
 
-    useEffect(() => {
-       BookingService.setDiscountSpecialDays(id).then((response) => {
-            setDiscSpecialDays(response.data);
+    const handleInputChange = (e) => {
+        setIdInput(e.target.value);
+    }
+
+    const discSpecialDays = () => {
+        BookingService.setDiscountSpecialDays(idInput).then((response) => {
+            setClientsDiscounts(response.data);
+            setShowPrices(true);
        }).catch((error) => {
             console.log("Error fetching discount by special days.", error);  
        })
-    }, [id])
+    }
+
+    const handleMenuClient = () => {
+        navigate("/menuClient");
+    }
 
     return(
-        <div className="container mt-4">
-            <h2 className="mb-4">Client Discount for Special Days in Booking #{id}</h2>
-            {discSpecialDays.length > 0 ? (
-                <ul className="list-group">
-                    {discSpecialDays.map((pair, index) => (
-                        <li key={index} className="list-group-item">
-                            {pair.first} - ${pair.second.toLocaleString()}
-                        </li>
-                    ))}
-                </ul>
+        <div className="container mt-4" style={{margin: "50px"}}>
+            <h2>Set Discounts Special Days</h2>
+
+            <div>
+                <label htmlFor="idBooking">Enter the booking ID:</label>
+                <input 
+                    type="text"
+                    id="idBooking"
+                    className="form-control"
+                    value={idInput}
+                    onChange={handleInputChange}/>
+            </div>
+
+            <div>
+                <button className="btn btn-primary mb-4" onClick={discSpecialDays} style={{margin:"20px"}}>
+                    Discount for Special Days
+                </button>
+            </div>
+
+            {showPrices && clientsDiscounts.length > 0 ? (
+                <div>
+                    <h3 className="mb-3">Discount By Special Days for Booking #{idInput}</h3>
+                    <ul className="list-group">
+                        {clientsDiscounts.map((pair, index) => (
+                            <li key={index} className="list-group-item">
+                                {pair.first} - ${pair.second.toLocaleString()}
+                            </li>
+                        ))}     
+                    </ul>
+                    <button className="btn btn-success mb-4" style={{margin:"30px"}} onClick={handleMenuClient}>
+                        Return to menu client
+                    </button>
+                </div>
             ) : (
-                <p>No data available.</p>
+                showPrices && <p>Data is not available</p>
             )}
+        
         </div>
     );
 }

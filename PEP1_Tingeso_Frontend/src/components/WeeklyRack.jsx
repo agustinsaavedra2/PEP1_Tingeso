@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import RackService from '../services/RackService';
+import { useNavigate } from 'react-router-dom';
 
 const WeeklyRack = () => {
   const [rackData, setRackData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [startDate, setStartDate] = useState('');
+  const navigate = useNavigate();
 
   const fetchWeeklyRacks = () => {
     setLoading(true);
@@ -29,6 +31,10 @@ const WeeklyRack = () => {
   const handleDateChange = (e) => {
     setStartDate(e.target.value);
   };
+
+  const handleMenuClient = () => {
+    navigate("/menuClient");
+  }
 
   return (
     <div style={{ padding: '1rem', fontFamily: 'Arial, sans-serif' }}>
@@ -84,8 +90,13 @@ const WeeklyRack = () => {
               </table>
             </div>
           ))}
+          <button className="btn btn-success mb-4" style={{margin:"30px"}} onClick={handleMenuClient}>
+              Return to menu client
+          </button>
         </div>
+        
       )}
+
     </div>
   );
 };

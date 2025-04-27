@@ -14,6 +14,7 @@ import ReportBookingNumPeople from './components/ReportBookingNumPeople'
 import WeeklyRack from './components/WeeklyRack'
 import GenerateClientVouchers from './components/GenerateClientVouchers'
 import './App.css'
+import MenuClient from './components/MenuClient'
 
 function App() {
 
@@ -25,13 +26,14 @@ function App() {
           <Route path="/home" element={<Home/>}/>
           <Route path="/addClient" element={<AddClient/>}/>
           <Route path="/loginClient" element={<LoginClient/>}/>
+          <Route path="/menuClient" element={<MenuClient/>}/>
           <Route path="/allBookings" element={<AllBookings/>}/>
           <Route path="/addBooking" element={<AddBooking/>} />
-          <Route path="/setPriceAndDuration/:id" element={<SetPriceDuration/>} />
-          <Route path="/setDiscountPeopleNumber/:id" element={<DiscountNumPeople/>} />
-          <Route path="/setDiscountFreqClient/:id" element={<DiscountFreqClient/>} />
-          <Route path="/setDiscountSpecialDays/:id" element={<DiscountSpecialDays/>}/>
-          <Route path="/reportBookingType/" element={<ReportBookingType/>} />
+          <Route path="/setPriceAndDuration" element={<SetPriceDuration/>} />
+          <Route path="/setDiscountPeopleNumber" element={<DiscountNumPeople/>} />
+          <Route path="/setDiscountFreqClient" element={<DiscountFreqClient/>} />
+          <Route path="/setDiscountSpecialDays" element={<DiscountSpecialDays/>}/>
+          <Route path="/reportBookingType" element={<ReportBookingType/>} />
           <Route path="/reportBookingNumPeople" element={<ReportBookingNumPeople/>} />
           <Route path="/getWeeklyRack" element={<WeeklyRack/>} />
           <Route path="/generateClientVouchers" element={<GenerateClientVouchers/>} />

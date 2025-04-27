@@ -11,7 +11,7 @@ export default function LoginClient(){
 
         ClientService.getClientByEmail(email).then((response) => {
             console.log(response.data)
-            navigate("/")
+            navigate("/menuClient")
         }).catch((error) => {
             console.log("Client can't login", error);
         })

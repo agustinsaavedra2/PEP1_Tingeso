@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import VoucherService from '../services/VoucherService';
+import { useNavigate } from 'react-router-dom';
 
 const GenerateClientVouchers = () => {
   const [bookingId, setBookingId] = useState('');
   const [vouchers, setVouchers] = useState([]);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleGenerate = (e) => {
     e.preventDefault();
@@ -20,6 +22,10 @@ const GenerateClientVouchers = () => {
         setError("No se pudieron generar los vouchers.");
       });
   };
+
+  const handleMenuClient = () => {
+    navigate("/menuClient");
+  }
 
   return (
     <div style={{ padding: '50px', fontFamily: 'Arial' }}>
@@ -71,8 +77,14 @@ const GenerateClientVouchers = () => {
               <p><strong>Total a pagar:</strong> ${v.total_price}</p>
             </div>
           ))}
+          
+          <button className="btn btn-success mb-4" style={{margin:"30px"}} onClick={handleMenuClient}>
+                Return to menu client
+          </button>
         </div>
+        
       )}
+
     </div>
   );
 };

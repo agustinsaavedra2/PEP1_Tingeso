@@ -1,8 +1,10 @@
 import {useState, useEffect} from "react";
 import BookingService from "../services/BookingService"
+import { useNavigate } from "react-router-dom";
 
 const AllBookings = () => {
     const [listBookings, setListBookings] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() =>{
         BookingService.getAllBookings().then((response) => {
@@ -12,6 +14,10 @@ const AllBookings = () => {
         });
 
     }, []);
+
+    const handleMenuClient = () => {
+        navigate("/menuClient");
+    }
 
     return (
         <div className="container mt-4">
@@ -34,6 +40,10 @@ const AllBookings = () => {
             </div>
         ))}
         
+        <button className="btn btn-success mb-4" style={{margin:"30px"}} onClick={handleMenuClient}>
+            Return to menu client
+        </button>
+               
         </div>
 
     );
