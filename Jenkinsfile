@@ -4,6 +4,11 @@ pipeline {
         maven 'maven'
     }
     stages {
+        environment {
+            DB_HOST = '192.168.100.129'
+            DB_PASSWORD = 'laucesbkn2001'
+        }
+
         stage("Build JAR File") {
             steps {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/agustinsaavedra2/PEP1_Tingeso']])
