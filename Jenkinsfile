@@ -28,7 +28,7 @@ pipeline {
             steps{
                 script{
                    withCredentials([string(credentialsId: 'laucesbkn2001id', variable: 'laucesbkn2001')]) {
-                        bat 'docker login -u agustinsaavedra -p %laucesbkn2001%'
+                        bat 'docker login -u agustinsaavedra056 -p %laucesbkn2001%'
                    }
                    bat 'docker push agustinsaavedra056/pep1_tingeso_backend:latest'
                 }
