@@ -25,8 +25,8 @@ pipeline{
                 dir("pep1_tingeso_backend"){
                     script{
                          withDockerRegistry(credentialsId: 'docker-credentials'){
-                            bat "docker build -t agustinsaavedra056/pep1_tingeso_backend ."
-                            bat "docker push agustinsaavedra056/pep1_tingeso_backend"
+                            bat "docker build -t agustinsaavedra056/pep1_tingeso_backend:latest ."
+                            bat "docker push agustinsaavedra056/pep1_tingeso_backend:latest ."
                         }
                     }                    
                 }
