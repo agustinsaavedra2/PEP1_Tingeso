@@ -23,12 +23,13 @@ pipeline{
         stage("Build and Push Docker Image"){
             steps{
                 dir("pep1_tingeso_backend"){
-                    script{
-                         withDockerRegistry(credentialsId: 'docker-credentials'){
-                            bat "docker build -t agustinsaavedra056/pep1_tingeso_backend:latest ."
-                            bat "docker push agustinsaavedra056/pep1_tingeso_backend:latest"
+                    script {
+                        withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'agustinsaavedra056', passwordVariable: 'laucesbkn2001')]) {
+                            bat "docker login -u $DOCKER_USER -p $DOCKER_PASS"
+                            bat "docker build -t agustinsaavedra056/pep1_tingeso_frontend:latest ."
+                            bat "docker push agustinsaavedra056/pep1_tingeso_frontend:latest"
                         }
-                    }                    
+                    }              
                 }
             }
         }
