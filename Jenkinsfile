@@ -1,40 +1,36 @@
 pipeline {
     agent any
-    tools {
-        maven "maven" // Asegúrate de que esta herramienta esté configurada en Jenkins
+    tools{
+        maven 'maven_3_8_1'
     }
-    stages {
-        stage("Build JAR File") {
+    stages{
+        stage('Build maven'){
+            steps{
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/agustinsaavedra2/PEP1_Tingeso']])
+                bat 'mvn clean package'
+            }
+        }
+
+        stage('Unit Tests') {
             steps {
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/agustinsaavedra2/PEP1_Tingeso']])
-                dir("pep1_tingeso_backend") {
-                    sh "mvn clean install"
+                bat 'mvn test'
+            }
+        }
+
+        stage('Build docker image'){
+            steps{
+                script{
+                    bat 'docker build -t agustinsaavedra056/pep1_tingeso_backend:latest .'
                 }
             }
         }
-        stage("Test") {
-            steps {
-                dir("pep1_tingeso_backend") {
-                    sh "mvn test"
-                }
-            }
-        }
-        stage("Verify Lombok Processing") {
-            steps {
-                dir("pep1_tingeso_backend") {
-                    sh "mvn clean compile" // Esto asegura que Lombok sea procesado
-                }
-            }
-        }
-        stage("Build and Push Docker Image") {
-            steps {
-                dir("pep1_tingeso_backend") {
-                    script {
-                        withDockerRegistry(credentialsId: 'docker-credentials') {
-                            sh "docker build -t agustinsaavedra056/pep1_tingeso_backend:latest ."
-                            sh "docker push agustinsaavedra056/pep1_tingeso_backend:latest"
-                        }
-                    }
+        stage('Push image to Docker Hub'){
+            steps{
+                script{
+                   withCredentials([string(credentialsId: 'laucesbkn2001id', variable: 'laucesbkn2001')]) {
+                        bat 'docker login -u agustinsaavedra -p %laucesbkn2001%'
+                   }
+                   bat 'docker push agustinsaavedra056/pep1_tingeso_backend:latest'
                 }
             }
         }
