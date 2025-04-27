@@ -1,36 +1,34 @@
-pipeline {
+pipeline{
     agent any
     tools{
-        maven 'maven'
+        maven "maven"
+
     }
     stages{
-        stage('Build maven'){
+        stage("Build JAR File"){
             steps{
-                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/agustinsaavedra2/PEP1_Tingeso']])
-                bat 'mvn clean package'
-            }
-        }
-
-        stage('Unit Tests') {
-            steps {
-                bat 'mvn test'
-            }
-        }
-
-        stage('Build docker image'){
-            steps{
-                script{
-                    bat 'docker build -t agustinsaavedra056/pep1_tingeso_backend:latest .'
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/agustinsaavedra2/PEP1_Tingeso']])
+                dir("pep1_tingeso_backend"){
+                    bat "mvn clean install"
                 }
             }
         }
-        stage('Push image to Docker Hub'){
+        stage("Test"){
             steps{
-                script{
-                   withCredentials([string(credentialsId: 'laucesbkn2001id', variable: 'laucesbkn2001')]) {
-                        bat 'docker login -u agustinsaavedra056 -p %laucesbkn2001%'
-                   }
-                   bat 'docker push agustinsaavedra056/pep1_tingeso_backend:latest'
+                dir("pep1_tingeso_backend"){
+                    bat "mvn test"
+                }
+            }
+        }        
+        stage("Build and Push Docker Image"){
+            steps{
+                dir("pep1_tingeso_backend"){
+                    script{
+                         withDockerRegistry(credentialsId: 'docker-credentials'){
+                            bat "docker build -t agustinsaavedra056/pep1_tingeso_backend:latest ."
+                            bat "docker push agustinsaavedra056/pep1_tingeso_backend:latest ."
+                        }
+                    }                    
                 }
             }
         }
