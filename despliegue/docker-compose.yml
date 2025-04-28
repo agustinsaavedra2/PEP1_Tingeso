@@ -7,7 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: laucesbkn2001
       MYSQL_DATABASE: pep1
     ports:
-      - "3306:3306"
+      - "3307:3306"
     networks:
       - backend-network
     volumes:
@@ -16,7 +16,7 @@ services:
   backend1:
     image: agustinsaavedra056/pep1_tingeso_backend:latest
     environment:
-      - DB_HOST=mysql  
+      - DB_HOST=mysql
       - DB_PASSWORD=laucesbkn2001
     networks: 
       - backend-network
@@ -26,7 +26,7 @@ services:
   backend2:
     image: agustinsaavedra056/pep1_tingeso_backend:latest
     environment:
-      - DB_HOST=mysql  # Aquí se usa el nombre del servicio de MySQL
+      - DB_HOST=mysql
       - DB_PASSWORD=laucesbkn2001
     networks: 
       - backend-network
@@ -36,7 +36,7 @@ services:
   backend3:
     image: agustinsaavedra056/pep1_tingeso_backend:latest
     environment:
-      - DB_HOST=mysql  # Aquí se usa el nombre del servicio de MySQL
+      - DB_HOST=mysql 
       - DB_PASSWORD=laucesbkn2001
     networks: 
       - backend-network
@@ -47,10 +47,12 @@ services:
     image: agustinsaavedra056/pep1_tingeso_frontend:latest
     networks: 
       - frontend-network
+
   frontend2:
     image: agustinsaavedra056/pep1_tingeso_frontend:latest
     networks: 
       - frontend-network
+
   frontend3:
     image: agustinsaavedra056/pep1_tingeso_frontend:latest
     networks: 
@@ -83,8 +85,10 @@ services:
       - frontend-network
 
 networks:
-  backend-network:
   frontend-network:
+    driver: bridge
+  backend-network:
+    driver: bridge
 
 volumes:
   mysql_data:
