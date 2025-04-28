@@ -1,67 +1,90 @@
 version: "3.8"
 
 services: 
-    backend1:
-      image: agustinsaavedra056/pep1_tingeso_backend:latest
-      environment:
-        - DB_HOST=192.168.100.129
-        - DB_PASSWORD=laucesbkn2001
-      networks: 
-        - backend-network
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: laucesbkn2001
+      MYSQL_DATABASE: pep1
+    ports:
+      - "3306:3306"
+    networks:
+      - backend-network
+    volumes:
+      - mysql_data:/var/lib/mysql
 
-    backend2:
-      image: agustinsaavedra056/pep1_tingeso_backend:latest
-      environment:
-        - DB_HOST=192.168.100.129
-        - DB_PASSWORD=laucesbkn2001
-      networks: 
-        - backend-network
-    
-    backend3:
-      image: agustinsaavedra056/pep1_tingeso_backend:latest
-      environment:
-        - DB_HOST=192.168.100.129
-        - DB_PASSWORD=laucesbkn2001
-      networks: 
-        - backend-network
-    
-    frontend1:
-      image: agustinsaavedra056/pep1_tingeso_frontend:latest
-      networks: 
-        - frontend-network
-    frontend2:
-      image: agustinsaavedra056/pep1_tingeso_frontend:latest
-      networks: 
-        - frontend-network
-    frontend3:
-      image: agustinsaavedra056/pep1_tingeso_frontend:latest
-      networks: 
-        - frontend-network
-    backend-nginx:
-      image: nginx:latest
-      ports: 
-        - "8080:8080"
-      volumes:
-        - ./backend.conf:/etc/nginx/nginx.conf
-      depends_on:
-        - backend1
-        - backend2
-        - backend3
-      networks: 
-        - backend-network
-    frontend-nginx:
-      image: nginx:latest
-      ports:
-        - "5173:80"
-      volumes: 
-        - ./frontend.conf:/etc/nginx/nginx.conf 
-      depends_on:
-        - frontend1
-        - frontend2
-        - frontend3
-      networks:
-        - frontend-network
+  backend1:
+    image: agustinsaavedra056/pep1_tingeso_backend:latest
+    environment:
+      - DB_HOST=mysql  
+      - DB_PASSWORD=laucesbkn2001
+    networks: 
+      - backend-network
+    depends_on:
+      - mysql
+
+  backend2:
+    image: agustinsaavedra056/pep1_tingeso_backend:latest
+    environment:
+      - DB_HOST=mysql  # Aquí se usa el nombre del servicio de MySQL
+      - DB_PASSWORD=laucesbkn2001
+    networks: 
+      - backend-network
+    depends_on:
+      - mysql
+
+  backend3:
+    image: agustinsaavedra056/pep1_tingeso_backend:latest
+    environment:
+      - DB_HOST=mysql  # Aquí se usa el nombre del servicio de MySQL
+      - DB_PASSWORD=laucesbkn2001
+    networks: 
+      - backend-network
+    depends_on:
+      - mysql
+
+  frontend1:
+    image: agustinsaavedra056/pep1_tingeso_frontend:latest
+    networks: 
+      - frontend-network
+  frontend2:
+    image: agustinsaavedra056/pep1_tingeso_frontend:latest
+    networks: 
+      - frontend-network
+  frontend3:
+    image: agustinsaavedra056/pep1_tingeso_frontend:latest
+    networks: 
+      - frontend-network
+
+  backend-nginx:
+    image: nginx:latest
+    ports: 
+      - "8080:8080"
+    volumes:
+      - ./backend.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
+    networks: 
+      - backend-network
+
+  frontend-nginx:
+    image: nginx:latest
+    ports:
+      - "5173:80"
+    volumes: 
+      - ./frontend.conf:/etc/nginx/nginx.conf 
+    depends_on:
+      - frontend1
+      - frontend2
+      - frontend3
+    networks:
+      - frontend-network
 
 networks:
   backend-network:
   frontend-network:
+
+volumes:
+  mysql_data:
