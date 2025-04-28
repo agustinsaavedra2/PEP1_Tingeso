@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -24,6 +25,85 @@ public class BookingService {
     private VoucherRepository voucherRepository;
 
     public BookingEntity createBooking(BookingEntity booking) {
+        if(booking.getNameBooking() == null || booking.getNameBooking().isBlank()){
+            throw new IllegalArgumentException("Booking name cannot be empty");
+        }
+
+        if(booking.getLapsNumber() <= 0) {
+            throw new IllegalArgumentException("LapsNumber must be greater than 0");
+        }
+
+        if(booking.getMaximumTime() <= 0) {
+            throw new IllegalArgumentException("Maximum time must be greater than 0");
+        }
+
+        if(booking.getBookingDate() == null) {
+            throw new IllegalArgumentException("Booking date cannot be null");
+        }
+
+        if(booking.getBookingTime() == null) {
+            throw new IllegalArgumentException("Booking time cannot be null");
+        }
+
+        LocalDate bookingDate = booking.getBookingDate();
+        LocalTime bookingTime = booking.getBookingTime();
+
+        DayOfWeek day = bookingDate.getDayOfWeek();
+
+        List<LocalDate> holidays = Arrays.asList(
+                LocalDate.of(bookingDate.getYear(), 1, 1),
+                LocalDate.of(bookingDate.getYear(), 4, 18),
+                LocalDate.of(bookingDate.getYear(), 4, 19),
+                LocalDate.of(bookingDate.getYear(), 5, 1),
+                LocalDate.of(bookingDate.getYear(), 5, 21),
+                LocalDate.of(bookingDate.getYear(), 6, 20),
+                LocalDate.of(bookingDate.getYear(), 6, 29),
+                LocalDate.of(bookingDate.getYear(), 7, 16),
+                LocalDate.of(bookingDate.getYear(), 8, 15),
+                LocalDate.of(bookingDate.getYear(), 9, 18),
+                LocalDate.of(bookingDate.getYear(), 9, 19),
+                LocalDate.of(bookingDate.getYear(), 10, 12),
+                LocalDate.of(bookingDate.getYear(), 10, 31),
+                LocalDate.of(bookingDate.getYear(), 11, 1),
+                LocalDate.of(bookingDate.getYear(), 11, 16),
+                LocalDate.of(bookingDate.getYear(), 12, 8),
+                LocalDate.of(bookingDate.getYear(), 12, 14),
+                LocalDate.of(bookingDate.getYear(), 12, 25)
+        );
+
+        boolean isWeekend = (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY);
+        boolean isHoliday = holidays.contains(bookingDate);
+
+        if (isWeekend || isHoliday) {
+            if (bookingTime.isBefore(LocalTime.of(10, 0)) || bookingTime.isAfter(LocalTime.of(22, 0))) {
+                throw new IllegalArgumentException("On weekends and holidays, booking time must be between 10:00 and 22:00");
+            }
+        } else {
+            if (bookingTime.isBefore(LocalTime.of(14, 0)) || bookingTime.isAfter(LocalTime.of(22, 0))) {
+                throw new IllegalArgumentException("On weekdays, booking time must be between 14:00 and 22:00");
+            }
+        }
+
+        if(booking.getTotalDuration() <= 0) {
+            throw new IllegalArgumentException("Total duration must be greater than 0");
+        }
+
+        if(booking.getBasePrice() < 0){
+            throw new IllegalArgumentException("Base price must be greater than or equal 0");
+        }
+
+        if(booking.getDiscountByPeopleNumber() < 0){
+            throw new IllegalArgumentException("Discount by people number must be greater than or equal 0");
+        }
+
+        if(booking.getDiscountByFrequentCustomer() < 0){
+            throw new IllegalArgumentException("Discount by frequent customer must be greater than or equal 0");
+        }
+
+        if(booking.getDiscountBySpecialDays() < 0){
+            throw new IllegalArgumentException("Discount by frequent customer must be greater than or equal 0");
+        }
+
         if(booking.getClients() != null){
             for(ClientEntity client : booking.getClients()){
                 client.setNumberOfVisits(client.getNumberOfVisits() + 1);

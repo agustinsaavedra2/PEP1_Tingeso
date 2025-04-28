@@ -116,7 +116,7 @@ public class VoucherService {
             vouchers.add(saved);
 
             byte[] pdfBytes = generateVoucherPDF(saved);
-            sendEmailWithVoucher(saved.getClientName(), client.getEmail(), pdfBytes);
+            sendEmailWithVoucher(saved.getClientName(), username, pdfBytes);
         }
 
         return vouchers;
