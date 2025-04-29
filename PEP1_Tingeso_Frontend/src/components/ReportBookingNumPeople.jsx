@@ -32,7 +32,7 @@ const ReportBookingNumPeople = () => {
 
     return (
         <div>
-            <h2>Revenue Report</h2>
+            <h2>Reporte por Número de Clientes</h2>
             <div>
                 <label htmlFor="startDate" style={{margin: "20px"}}>Start Date:</label>
                 <input
