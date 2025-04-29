@@ -198,11 +198,11 @@ public class BookingService {
             booking.setDiscountByPeopleNumber(discount);
         }
         else if(booking.getClients().size() >= 11 && booking.getClients().size() <= 15){
-            discount = booking.getBasePrice() * 0.20;
+            discount = booking.getBasePrice() * 0.30;
             booking.setDiscountByPeopleNumber(discount);
         }
         else{
-            booking.setDiscountByPeopleNumber(discount);
+            throw new IllegalArgumentException("Client's size are not in range");
         }
 
         List<Pair<String, Double>> clientsDiscountSizePeople = new ArrayList<>();
