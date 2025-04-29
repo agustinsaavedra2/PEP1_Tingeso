@@ -84,7 +84,7 @@ public class BookingService {
             }
         }
 
-        if(booking.getTotalDuration() <= 0) {
+        if(booking.getTotalDuration() < 0) {
             throw new IllegalArgumentException("Total duration must be greater than 0");
         }
 

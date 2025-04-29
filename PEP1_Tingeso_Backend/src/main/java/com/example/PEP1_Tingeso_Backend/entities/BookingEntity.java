@@ -26,7 +26,7 @@ public class BookingEntity {
     private Integer maximumTime;
     private LocalDate bookingDate;
     private LocalTime bookingTime;
-    private Integer totalDuration;
+    private int totalDuration;
     private Double basePrice;
     private Double discountByPeopleNumber;
     private Double discountByFrequentCustomer;
